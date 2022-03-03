@@ -1,5 +1,4 @@
-#Turbo.az scrapped
-
+#Turbo.az scrapped with Python for Chevrolet Malibu cars
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
