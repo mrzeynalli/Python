@@ -1,4 +1,4 @@
-# Function that prints the sum of the digits of the numbers in a given range
+# A function that prints the sum of the digits of the numbers in a given range
 def digits_sum_of_range(x, y):  # the main function
 
     digits_list = []
