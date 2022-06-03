@@ -18,13 +18,21 @@ city_status = list(data["capital"])
 world_map = folium.Map(location=[50, 50], zoom_start=3)
 fg = folium.FeatureGroup(name="world_map")
 
+html = """<h4>City information:</h4>
+Name: %s
+Population: %s
+Status: %s
+"""
+
 
 # this function creates a map for only world (NOTE that very high computing power is needed to process this one)
 def world_map_creator():
     for city, pop, status, latitude, longitute in zip(city_name, population, city_status,
                                                       lat, lon):
+        print("\nMap is being made... Please wait...\n")
+        iframe = folium.IFrame(html=html % (city, pop, status), width=200, height=100)
         fg.add_child(folium.Marker(location=[latitude, longitute],
-                                   popup=f"Name: {city}\nPopulation: {pop}\nStatus: {status}",
+                                   popup=folium.Popup(iframe),
                                    icon=folium.Icon(color="blue")))
     world_map.add_child(fg)
     world_map.save(f"map_of_World.html")
@@ -38,17 +46,18 @@ def country_map_formation(country_name_input):
 
     for country_name, city, pop, status, latitude, longitute in zip(country, city_name, population, city_status,
                                                                     lat, lon):
+        iframe = folium.IFrame(html=html % (city, pop, status), width=200, height=100)
         if country_name.upper() == input_value.upper():
             # makes the tag of capital city in red
             if status == "primary":
                 fg.add_child(folium.Marker(location=[latitude, longitute],
-                                           popup=f"Name: {city}\nPopulation: {pop}\nStatus: {status}",
+                                           popup=folium.Popup(iframe),
                                            icon=folium.Icon(color="red")))
 
             # makes the tag of non-capital city in blue
             else:
                 fg.add_child(folium.Marker(location=[latitude, longitute],
-                                           popup=f"Name: {city}\nPopulation: {pop}\nStatus: {status}",
+                                           popup=folium.Popup(iframe),
                                            icon=folium.Icon(color="blue")))
 
 
@@ -58,7 +67,7 @@ def map_creator():
 
     while True:
         input_value = input(
-            "Which country's cities do you want to make a map of? (Put 'World' to see all cities of the world:")
+            "Which country's cities do you want to make a map of? (Put 'World' to see all cities of the world: ")
 
         if input_value.upper() == "WORLD":
             world_map_creator()
@@ -69,8 +78,10 @@ def map_creator():
             continue
 
         else:
+            print("\nMap is being made... Please wait...\n")
             country_map_formation(input_value)
             world_map.add_child(fg)
+            print("Done!")
             countries_list.append(input_value)
 
             while True:
@@ -78,8 +89,9 @@ def map_creator():
                 if if_add_more.upper() == "Y":
                     another_country = input("\nName the other country: ")
                     if another_country.upper() in list(c.upper() for c in country):
+                        print("\nMap is being made... Please wait...\n")
                         country_map_formation(another_country)
-                        print(f"{another_country.title()} is added")
+                        print(f"\n{another_country.title()} is added")
                         world_map.add_child(fg)
                         countries_list.append(another_country)
                         continue
@@ -91,7 +103,7 @@ def map_creator():
                 else:
                     print("\nPleae put a valid answer")
                     continue
-            print("Your map is created and saved in the current directory")
+            print("\nYour map is created and saved in the current directory")
 
             conts_name = "_".join(countries_list)
             world_map.save(f"map_of_{conts_name}.html")
